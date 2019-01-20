@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#514363"
+    tools:context=".Register">
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="33sp"
+        android:textColor="#ffffff"
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="First Name"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:id="@+id/firstNameTV"
+        android:layout_marginTop="30dp"/>
+    <EditText
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="Last Name"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:id="@+id/lastNameTV"/>
+
+    <Spinner
+        android:layout_marginTop="15dp"
+        android:id="@+id/yearSpi"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:layout_marginTop="15dp"
+        android:id="@+id/branchSpi"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+    <Spinner
+        android:layout_marginTop="15dp"
+        android:id="@+id/secSpi"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:layout_marginTop="15dp"
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:id="@+id/emailForRegTV"/>
+    <EditText
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:id="@+id/passwordForRegTV"/>
+    <EditText
+        android:inputType="textPassword"
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:hint="Re-enter password"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:id="@+id/confirmPasswordTV"/>
+    <Button
+        android:layout_marginTop="35dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:onClick="register"
+        android:background="#F7DC6F"
+        android:fontFamily="serif"/>
+
+
+</LinearLayout>

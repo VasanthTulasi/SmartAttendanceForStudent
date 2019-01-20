@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="#514363"
+    tools:context=".Login">
+
+    <TextView
+        android:layout_marginTop="35dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="33sp"
+        android:textColor="#ffffff"
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:id="@+id/emailTV"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:hint="Enter email"
+        android:layout_marginTop="35dp"
+        />
+
+    <EditText
+        android:textColor="#ffffff"
+        android:layout_marginTop="18dp"
+        android:layout_gravity="center_horizontal"
+        android:inputType="textPassword"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordTV"
+        android:hint="Enter password"
+        android:textColorHint="#ffffff"
+        />
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot password?"
+        android:textColor="#ffffff"
+        android:onClick="forgotPass"
+        android:textSize="18dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="35dp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="login"
+        android:background="#F7DC6F"
+        android:fontFamily="serif"
+        android:onClick="signin"/>
+
+    <Button
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="sign up"
+        android:background="#F7DC6F"
+        android:fontFamily="serif"
+        android:onClick="signup"/>
+
+
+
+
+
+</LinearLayout>
