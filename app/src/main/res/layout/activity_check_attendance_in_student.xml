@@ -4,15 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#514363"
     tools:context=".CheckAttendanceInStudent">
 
 
+    <TextView
+        android:layout_marginTop="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/attendanceIs"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:textAlignment="center"
+        android:text="Your current attendance is:"
+        android:layout_marginBottom="60dp"/>
+
 
     <TextView
+        android:layout_below="@+id/attendanceIs"
+        android:background="@drawable/circle"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dbTV"
-        android:textColor="#000000" />
+        android:padding="40dp"
+        android:id="@+id/dbTV3"
+        android:textSize="55sp"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_marginTop="60dp"
+        android:layout_below="@id/dbTV3"
+        android:id="@+id/workingClassesTV"
+        android:text="Number of working classes: "
+        android:textColor="#ffffff"
+        android:textSize="21sp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/workingClassesTV"
+        android:id="@+id/attendedClassesTV"
+        android:text="Number of attended classes: "
+        android:textColor="#ffffff"
+        android:textSize="21sp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/subjectwiseTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/attendedClassesTV"
+        android:text="Check subject wise attendance"
+        android:textColor="#00FFFF"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:onClick="subjectWiseAttendance"
+        android:fontFamily=""
+        android:layout_marginTop="5dp"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:layout_below="@id/subjectwiseTV"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contact your class incharge for attendance related queries or issues."/>
 
 
 

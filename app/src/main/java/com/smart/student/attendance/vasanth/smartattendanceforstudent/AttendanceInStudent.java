@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ public class AttendanceInStudent extends AppCompatActivity {
     Date c = Calendar.getInstance().getTime();
     SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     String formattedDate = df.format(c);
+    long noOfClasses=1L;
 
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
@@ -57,11 +60,15 @@ public class AttendanceInStudent extends AppCompatActivity {
     DatabaseReference studentNamesRef;
 
 
+    boolean isButtonClicked = false;
+    Button validateBTN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance_in_student);
 
+        validateBTN = (Button) findViewById(R.id.validate);
         welcomeText = findViewById(R.id.welcomeText);
 
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
@@ -85,6 +92,17 @@ public class AttendanceInStudent extends AppCompatActivity {
             }
         });
 
+        DatabaseReference databaseReferenceForNoOfClasses = FirebaseDatabase.getInstance().getReference().child("noOfClasses");
+        databaseReferenceForNoOfClasses.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                noOfClasses = dataSnapshot.child(year+branch+section+AdapterClassForSubjects.subjectName).getValue(Long.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -123,14 +141,35 @@ public class AttendanceInStudent extends AppCompatActivity {
     }
 
     public void buttonClicked(View v){
+        isButtonClicked = true;
+        checkIfAttendanceRecorder();
+    }
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            getUserName();
-        }
+    public void checkIfAttendanceRecorder(){
+        DatabaseReference dbForAttendaceRecordedOrNot = FirebaseDatabase.getInstance().getReference().child("attendance").child(year).child(branch).child(section).child(AdapterClassForSubjects.subjectName).child(userName);
+        dbForAttendaceRecordedOrNot.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(isButtonClicked) {
+                    String s = dataSnapshot.child("isAttendanceRecorded").getValue(String.class);
+                    if (s.equals("false")) {
+                        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                            buildAlertMessageNoGps();
+                        } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                            getUserName();
+                        }
+                    } else {
+                        Toast.makeText(AttendanceInStudent.this, "You attendance is already recorded", Toast.LENGTH_LONG).show();
+                        isButtonClicked = false;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
 
     }
 
@@ -143,16 +182,32 @@ public class AttendanceInStudent extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    if(dataSnapshot1.getKey().equals(checkAuth)){
-                        if(dataSnapshot1.getValue().equals(val))
-                            enterDataOnToCloud();
-                        else
-                            Toast.makeText(AttendanceInStudent.this,"Incorrect code",Toast.LENGTH_SHORT).show();
+                if(isButtonClicked) {
+                    String code = String.valueOf(dataSnapshot.child(checkAuth).getValue());
+                    if (code.equals(val) && !val.equals("")){
+                        getNoOfClasses();
+                    }
+                    else {
+                        Toast.makeText(AttendanceInStudent.this, "Incorrect code", Toast.LENGTH_SHORT).show();
+                        isButtonClicked=false;
                     }
                 }
             }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void getNoOfClasses(){
+        DatabaseReference databaseReferenceForNoOfClasses = FirebaseDatabase.getInstance().getReference().child("noOfClasses");
+        databaseReferenceForNoOfClasses.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                noOfClasses = dataSnapshot.child(year+branch+section+AdapterClassForSubjects.subjectName).getValue(Long.class);
+                enterDataOnToCloud();
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -180,8 +235,6 @@ public class AttendanceInStudent extends AppCompatActivity {
         });
     }
 
-
-
     public void enterDataOnToCloud(){
 
         if(studentNames.contains(userName)) {
@@ -189,11 +242,18 @@ public class AttendanceInStudent extends AppCompatActivity {
             databaseReferenceForDateEntry.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.hasChild(formattedDate)) {
-                        getThePreviousValue();
-                    } else {
-                        databaseReferenceForDateEntry.child(formattedDate).setValue(1);
-                        Toast.makeText(AttendanceInStudent.this,"Your attendace is recorded",Toast.LENGTH_LONG).show();
+                    if(isButtonClicked) {
+                        if (snapshot.hasChild(formattedDate)) {
+                            getThePreviousValue();
+                        } else {
+                            changeButtonConditions();
+                            Toast.makeText(AttendanceInStudent.this, "Your attendance is recorded", Toast.LENGTH_LONG).show();
+                            databaseReferenceForDateEntry.child(formattedDate).setValue(noOfClasses);
+                            isButtonClicked=false;
+                            DatabaseReference dbForAttendaceRecord = databaseReferenceForDateEntry.child("isAttendanceRecorded");
+                            dbForAttendaceRecord.setValue("true");
+
+                        }
                     }
                 }
 
@@ -208,6 +268,31 @@ public class AttendanceInStudent extends AppCompatActivity {
 
     }
 
+    public void changeButtonConditions(){
+        validateBTN.setBackgroundColor(Color.parseColor("#BF360C"));
+        validateBTN.setTextColor(Color.WHITE);
+        validateBTN.setEnabled(false);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(60* 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AttendanceInStudent.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        validateBTN.setEnabled(true);
+                        validateBTN.setBackgroundColor(Color.parseColor("#F7DC6F"));
+                        validateBTN.setTextColor(Color.BLACK);
+                    }
+                });
+            }
+        }).start();
+    }
+
     public void getThePreviousValue(){
 
         Date c = Calendar.getInstance().getTime();
@@ -219,10 +304,18 @@ public class AttendanceInStudent extends AppCompatActivity {
         preValRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long previousValue = dataSnapshot.getValue(Long.class);
-                long presentVal = previousValue + 1;
-                preValRef.setValue(presentVal);
-                Toast.makeText(AttendanceInStudent.this,"Your attendace is recorded",Toast.LENGTH_LONG).show();
+                if (isButtonClicked) {
+                    changeButtonConditions();
+                    Toast.makeText(AttendanceInStudent.this, "Your attendance is recorded", Toast.LENGTH_LONG).show();
+                    long previousValue = dataSnapshot.getValue(Long.class);
+                    long presentVal = previousValue + noOfClasses;
+                    preValRef.setValue(presentVal);
+                    DatabaseReference dbForAttendaceRecord = FirebaseDatabase.getInstance().getReference().child("attendance").child(year).child(branch).child(section).child(AdapterClassForSubjects.subjectName).child(userName).child("isAttendanceRecorded");
+                    dbForAttendaceRecord.setValue("true");
+
+                    isButtonClicked=false;
+
+                }
             }
 
             @Override
@@ -245,7 +338,7 @@ public class AttendanceInStudent extends AppCompatActivity {
 
             Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            Location location2 = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+            Location location2 = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             if (location != null) {
                 double latti = location.getLatitude();

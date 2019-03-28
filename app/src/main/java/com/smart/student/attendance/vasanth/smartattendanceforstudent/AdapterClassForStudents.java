@@ -73,8 +73,7 @@ public class AdapterClassForStudents extends ArrayAdapter<CardClass> {
         studentCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,"Student card clicked",Toast.LENGTH_SHORT).show();
-                studentCard.setCardBackgroundColor(Color.parseColor("#81C784"));
+
             }
         });
 

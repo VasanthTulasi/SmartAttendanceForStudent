@@ -15,6 +15,17 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign out"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:onClick="signout"
+                android:layout_alignParentLeft="true" />
         <TextView
             android:id="@+id/yearTV"
             android:layout_width="wrap_content"
@@ -24,17 +35,7 @@
             android:text="Year"
             android:textColor="#ffffff"
             android:textSize="32dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign out"
-            android:textColor="#ffffff"
-            android:textSize="15sp"
-            android:layout_marginRight="15dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="signout"
-            android:layout_alignParentRight="true" />
+
         </RelativeLayout>
     </LinearLayout>
 

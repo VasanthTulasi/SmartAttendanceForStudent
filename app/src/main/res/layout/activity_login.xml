@@ -40,6 +40,18 @@
         android:hint="Enter password"
         android:textColorHint="#ffffff"
         />
+    <EditText
+        android:textColor="#ffffff"
+        android:layout_marginTop="18dp"
+        android:layout_gravity="center_horizontal"
+        android:inputType="text"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginPinTV"
+        android:hint="Enter Login PIN of your class"
+        android:textColorHint="#ffffff"
+        />
+
     <TextView
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"

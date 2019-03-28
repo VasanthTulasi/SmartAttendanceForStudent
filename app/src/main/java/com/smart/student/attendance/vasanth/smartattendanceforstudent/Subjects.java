@@ -10,6 +10,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -52,7 +54,7 @@ public class Subjects extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subjects);
 
-        firebaseAuthSub = FirebaseAuth.getInstance();
+            firebaseAuthSub = FirebaseAuth.getInstance();
         pbar = findViewById(R.id.pBarInSubjects);
 
         ActivityCompat.requestPermissions(Subjects.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -168,5 +170,14 @@ public class Subjects extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.mymenu, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item){
+        Toast.makeText(this,"Checking attendance", Toast.LENGTH_LONG).show();
+        return true;
     }
 }

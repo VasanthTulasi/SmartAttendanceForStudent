@@ -21,7 +21,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8.2"
+        android:layout_weight="8.1"
         >
 
         <ProgressBar
@@ -38,19 +38,35 @@
         />
     </RelativeLayout>
 
-
-
-    <Button
-        android:text="Mark my attendace"
-        android:id="@+id/recordAttendance"
-        android:onClick="markAttendance"
-        android:background="#BF360C"
-        android:textSize="15sp"
-        android:textColor="#ffffff"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_weight="0.9"
+        android:orientation="horizontal">
+
+        <Button
+            android:text="Mark my attendace"
+            android:id="@+id/recordAttendance"
+            android:onClick="markAttendance"
+            android:background="#BF360C"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/checkAttendance"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F7DC6F"
+            android:layout_weight="1"
+            android:onClick="checkAttendance"
+            android:text="Check my attendance"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 
 </LinearLayout>

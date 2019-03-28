@@ -129,5 +129,9 @@ public class Students extends AppCompatActivity {
             Toast.makeText(Students.this,"You are not a student of this subject yet. Contact the admin for further details.",Toast.LENGTH_LONG).show();
     }
 
+    public void checkAttendance(View v){
+        startActivity(new Intent(Students.this,CheckAttendanceInStudent.class));
+    }
+
 
 }

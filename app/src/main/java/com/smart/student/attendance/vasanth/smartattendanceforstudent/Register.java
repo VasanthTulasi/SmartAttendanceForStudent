@@ -20,8 +20,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Register extends AppCompatActivity {
     EditText firstNameTV;
@@ -29,6 +32,7 @@ public class Register extends AppCompatActivity {
     EditText emailForRegTV;
     EditText passwordForRegTV;
     EditText confirmPasswordTV;
+    EditText registrationPinTV;
 
     FirebaseAuth fAuthReg;
 
@@ -49,6 +53,7 @@ public class Register extends AppCompatActivity {
         emailForRegTV = findViewById(R.id.emailForRegTV);
         passwordForRegTV = findViewById(R.id.passwordForRegTV);
         confirmPasswordTV = findViewById(R.id.confirmPasswordTV);
+        registrationPinTV = findViewById(R.id.registrationPinTV);
 
         fAuthReg = FirebaseAuth.getInstance();
 
@@ -118,9 +123,7 @@ public class Register extends AppCompatActivity {
                     section = "C";
                 else if(secSpi.getItemAtPosition(i).equals("Section D"))
                     section = "D";
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -133,37 +136,60 @@ public class Register extends AppCompatActivity {
 
     public void register(View v){
 
-        String fName="",lName="",email="",pass="",conPass="";
-        fName=firstNameTV.getText().toString();
-        lName=lastNameTV.getText().toString();
-        email=emailForRegTV.getText().toString();
-        pass=passwordForRegTV.getText().toString();
-        conPass=confirmPasswordTV.getText().toString();
 
-        if(!TextUtils.isEmpty(fName) && !TextUtils.isEmpty(lName) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(conPass)) {
-            if (pass.equals(conPass)) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Please confirm the details:\nYou belong to Year "+year+" - " +branch+" - "+section+".")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int id) {
-                                createUserOnCloud();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, final int id) {
-                                dialog.cancel();
-                            }
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
-            } else {
-                Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+        DatabaseReference db  = FirebaseDatabase.getInstance().getReference().child("pinForRegistration");
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String fName="",lName="",email="",pass="",conPass="",regisPin="";
+                fName=firstNameTV.getText().toString();
+                lName=lastNameTV.getText().toString();
+                email=emailForRegTV.getText().toString();
+                pass=passwordForRegTV.getText().toString();
+                conPass=confirmPasswordTV.getText().toString();
+                regisPin=registrationPinTV.getText().toString();
+
+                String s = String.valueOf(dataSnapshot.child(year+branch+section).getValue());
+
+                    if(!TextUtils.isEmpty(fName) && !(TextUtils.isEmpty(lName)) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(conPass) && !TextUtils.isEmpty(regisPin)) {
+                        if (pass.equals(conPass)) {
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(Register.this);
+                                if(s.equals(regisPin)) {
+                                    builder.setMessage("Please confirm the details:\nYou belong to Year " + year + " - " + branch + " - " + section + ".")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface dialog, final int id) {
+                                                    createUserOnCloud();
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                public void onClick(final DialogInterface dialog, final int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    final AlertDialog alert = builder.create();
+                                    alert.show();
+                                }else {
+                                    Toast.makeText(Register.this, "Registration failed! Incorrect registration pin entered.", Toast.LENGTH_LONG).show();
+                                }
+                        } else {
+                            Toast.makeText(Register.this, "Registration failed! Passwords do not match", Toast.LENGTH_LONG).show();
+                        }
+                    }else {
+                        Toast.makeText(Register.this, "Registration failed! Fields cannot be empty", Toast.LENGTH_LONG).show();
+
+                    }
+
+
             }
-        }else {
-            Toast.makeText(Register.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        }
+            }
+        });
+
+
+
 
     }
 
@@ -178,7 +204,7 @@ public class Register extends AppCompatActivity {
                             emailRegdb.child("Branch").setValue(branch);
                             emailRegdb.child("Section").setValue(section);
                             emailRegdb.child("Name").setValue(firstNameTV.getText().toString() + " " + lastNameTV.getText().toString());
-
+                            emailRegdb.child("Email").setValue(fAuthReg.getCurrentUser().getEmail());
                             Toast.makeText(Register.this, "Registration successful", Toast.LENGTH_SHORT).show();
                         }
                         if (!task.isSuccessful()) {
