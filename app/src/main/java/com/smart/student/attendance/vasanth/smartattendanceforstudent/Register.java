@@ -33,6 +33,7 @@ public class Register extends AppCompatActivity {
     EditText passwordForRegTV;
     EditText confirmPasswordTV;
     EditText registrationPinTV;
+    EditText rollNumberTV;
 
     FirebaseAuth fAuthReg;
 
@@ -40,7 +41,7 @@ public class Register extends AppCompatActivity {
     Spinner branchSpi;
     Spinner secSpi;
 
-    String year="",branch="",section="";
+    String year="",branch="",section="",rollno="";
 
 
     @Override
@@ -54,6 +55,7 @@ public class Register extends AppCompatActivity {
         passwordForRegTV = findViewById(R.id.passwordForRegTV);
         confirmPasswordTV = findViewById(R.id.confirmPasswordTV);
         registrationPinTV = findViewById(R.id.registrationPinTV);
+        rollNumberTV = findViewById(R.id.rollNumberTV);
 
         fAuthReg = FirebaseAuth.getInstance();
 
@@ -199,19 +201,19 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Toast.makeText(Register.this, "Registration successful", Toast.LENGTH_SHORT).show();
                             DatabaseReference emailRegdb = FirebaseDatabase.getInstance().getReference().child("emails").child(String.valueOf(fAuthReg.getCurrentUser().getUid()));
                             emailRegdb.child("Year").setValue(year);
                             emailRegdb.child("Branch").setValue(branch);
                             emailRegdb.child("Section").setValue(section);
                             emailRegdb.child("Name").setValue(firstNameTV.getText().toString() + " " + lastNameTV.getText().toString());
                             emailRegdb.child("Email").setValue(fAuthReg.getCurrentUser().getEmail());
-                            Toast.makeText(Register.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                            emailRegdb.child("RollNumber").setValue(rollNumberTV.getText().toString());
                         }
                         if (!task.isSuccessful()) {
                             FirebaseAuthException e = (FirebaseAuthException) task.getException();
                             Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
 

@@ -8,13 +8,14 @@
     android:background="#514363"
     tools:context=".Register">
 
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="35dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
     <TextView
         android:layout_marginTop="20dp"
@@ -49,7 +50,8 @@
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
         android:textColorHint="#ffffff"
-        android:id="@+id/rollNumberTV"/>
+        android:id="@+id/rollNumberTV"
+        android:inputType="textCapCharacters"/>
 
     <Spinner
         android:layout_marginTop="15dp"
@@ -116,7 +118,7 @@
         android:onClick="register"
         android:background="#F7DC6F"
         android:fontFamily="serif"/>
-        <!--</LinearLayout>-->
-    <!--</ScrollView>-->
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

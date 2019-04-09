@@ -28,6 +28,7 @@ public class Login extends AppCompatActivity {
     EditText loginPinTV;
     DatabaseReference db;
     String email="",password="",loginPin="";
+    boolean emailFound = false;
 
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -71,6 +72,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(String.valueOf(dataSnapshot.child("Email").getValue()).equals(email)){
+                                emailFound = true;
                                 final String year = String.valueOf(dataSnapshot.child("Year").getValue());
                                 final String branch = String.valueOf(dataSnapshot.child("Branch").getValue());
                                 final String section = String.valueOf(dataSnapshot.child("Section").getValue());
@@ -80,8 +82,9 @@ public class Login extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         String s = String.valueOf(dataSnapshot.child(year+branch+section).getValue());
-                                        if(s.equals(loginPin))
+                                        if(s.equals(loginPin)){
                                             login(email,password,loginPin);
+                                        }
                                         else
                                             Toast.makeText(Login.this,"Incorrect login pin entered",Toast.LENGTH_LONG).show();
                                     }
@@ -101,7 +104,8 @@ public class Login extends AppCompatActivity {
                         }
                     });
                 }
-
+                if(!emailFound)
+                    Toast.makeText(Login.this,"Email not found",Toast.LENGTH_LONG).show();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -138,8 +142,8 @@ public class Login extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(emailTV.getText().toString(), passwordTV.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (!task.isSuccessful())
-                        Toast.makeText(Login.this, "Not successful", Toast.LENGTH_SHORT).show();
+                    if(!task.isSuccessful())
+                        Toast.makeText(Login.this,task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }else{

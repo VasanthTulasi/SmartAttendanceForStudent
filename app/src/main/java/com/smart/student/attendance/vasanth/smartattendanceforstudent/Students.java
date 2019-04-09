@@ -1,11 +1,15 @@
 package com.smart.student.attendance.vasanth.smartattendanceforstudent;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +67,30 @@ public class Students extends AppCompatActivity {
             }
         });
 
+        final RelativeLayout ll = new RelativeLayout(this);
+        final TextView dynamicTextView = new TextView(this);
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(30* 1000);//min secs millisecs
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Students.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                            pb.setVisibility(View.GONE);
+                            if(namesForReferenceInStudents.isEmpty()) {
+                             Toast.makeText(Students.this,"No students in this subject",Toast.LENGTH_LONG).show();
+                            }
+                    }
+                });
+            }
+        }).start();
+
     }
 
     public void getStudentList(){
@@ -77,27 +105,54 @@ public class Students extends AppCompatActivity {
 
         final AdapterClassForStudents adapterForMemberInStudents = new AdapterClassForStudents(this, R.layout.card_design_for_students, membersArrayListInStudents);
         listViewInStudents.setAdapter(adapterForMemberInStudents);
-
         databaseReferenceInStudents.addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                String addedMember = dataSnapshot.getValue(String.class);
-                membersArrayListInStudents.add(new CardClass(1, addedMember));
-                namesForReferenceInStudents.add(addedMember);
-                String addedkey = dataSnapshot.getKey();
-                keysArrayListInStudents.add(addedkey);
-                adapterForMemberInStudents.notifyDataSetChanged();
+                    final String addedMember = dataSnapshot.getValue(String.class);
 
+                    final DatabaseReference dbToFindRollNumber = FirebaseDatabase.getInstance().getReference().child("emails");
+                    dbToFindRollNumber.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                DatabaseReference dbToFindRollNumberInsideEachKey = dbToFindRollNumber.child(ds.getKey());
+                                dbToFindRollNumberInsideEachKey.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.child("Name").getValue().equals(addedMember)) {
+                                            String rollNumber = String.valueOf(dataSnapshot.child("RollNumber").getValue());
+                                            membersArrayListInStudents.add(new CardClass(1, addedMember, rollNumber));
+                                            namesForReferenceInStudents.add(addedMember);
+                                            String addedkey = dataSnapshot.getKey();
+                                            keysArrayListInStudents.add(addedkey);
+                                            adapterForMemberInStudents.notifyDataSetChanged();
 
+                                            referenceForKeyArrayListInStudents = keysArrayListInStudents;
+                                            referenceForNamesArrayListInStudents = namesForReferenceInStudents;
 
-                referenceForKeyArrayListInStudents = keysArrayListInStudents;
-                referenceForNamesArrayListInStudents = namesForReferenceInStudents;
+                                            if (pb != null) {
+                                                pb.setVisibility(View.GONE);
+                                            }
+                                        }
 
-                if (pb != null) {
-                    pb.setVisibility(View.GONE);
-                }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
             }
 
             @Override
@@ -118,9 +173,13 @@ public class Students extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
+
         });
 
+
     }
+
 
     public void markAttendance(View v){
         if(namesForReferenceInStudents.contains(userName))

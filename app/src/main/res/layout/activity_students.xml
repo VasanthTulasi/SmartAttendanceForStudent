@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#514363"
+    android:id="@+id/linlay"
     tools:context=".Students">
 
     <TextView

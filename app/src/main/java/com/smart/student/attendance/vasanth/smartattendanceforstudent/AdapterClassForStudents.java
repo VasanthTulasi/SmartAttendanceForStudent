@@ -24,6 +24,7 @@ public class AdapterClassForStudents extends ArrayAdapter<CardClass> {
     private static class ViewHolder {
         TextView numberForMember;
         TextView nameForMember;
+        TextView rollNumberForMember;  //Added this line
     }
 
     public AdapterClassForStudents(Context context, int resource, ArrayList<CardClass> objects) {
@@ -44,6 +45,7 @@ public class AdapterClassForStudents extends ArrayAdapter<CardClass> {
         final int numberForMember= getItem(position).getIndexNumber();
 
         String nameForMember = getItem(position).getNameOfPerson();
+        String rollNumberForMember = getItem(position).getRollNumberOfPerson(); //Added this line
 
         //create the view result for showing the animation
         final View result;
@@ -52,13 +54,13 @@ public class AdapterClassForStudents extends ArrayAdapter<CardClass> {
         ViewHolder holder;
 
 
-
         if(convertView == null){
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(mResource, parent, false);
             holder= new ViewHolder();
             holder.numberForMember= (TextView) convertView.findViewById(R.id.numberForMember);
             holder.nameForMember = (TextView) convertView.findViewById(R.id.nameForMember);
+            holder.rollNumberForMember =(TextView)convertView.findViewById(R.id.rollNumberForMember); //Added this line
             result = convertView;
 
             convertView.setTag(holder);
@@ -85,6 +87,7 @@ public class AdapterClassForStudents extends ArrayAdapter<CardClass> {
         positionValue = position;
         holder.numberForMember.setText(String.valueOf(position+1));
         holder.nameForMember.setText(nameForMember);
+        holder.rollNumberForMember.setText(rollNumberForMember); //Added this line
 
 
 
